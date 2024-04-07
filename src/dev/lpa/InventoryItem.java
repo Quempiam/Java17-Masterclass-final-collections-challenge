@@ -1,6 +1,6 @@
 package dev.lpa;
 
-public class InventoryItem {
+public class InventoryItem implements Comparable<InventoryItem>{
 
     private Product product;
     private double price;
@@ -59,5 +59,11 @@ public class InventoryItem {
     public String toString() {
         return "%s, $%.2f : [%04d,% 2d]".formatted(product, price, qtyTotal,
                 qtyReserved);
+    }
+
+    @Override
+    public int compareTo(InventoryItem i) {
+        int ret = product.name().compareTo(i.product.name());
+        return ret == 0 ? product.sku().compareTo(i.product.sku()) : ret;
     }
 }

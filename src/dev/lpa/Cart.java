@@ -4,7 +4,12 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cart {
+public class Cart implements Comparable<Cart>{
+
+    @Override
+    public int compareTo(Cart c) {
+        return id - c.id;
+    }
 
     enum CartType {PHYSICAL, VIRTUAL};
     private static int lastId = 1;
@@ -33,11 +38,15 @@ public class Cart {
     }
 
     public void addItem(InventoryItem item, int qty) {
+        if (item != null) {
+            products.merge(item.getProduct().sku(), qty, Integer::sum);
 
-        products.merge(item.getProduct().sku(), qty, Integer::sum);
-
-        if (!item.reserveItem(qty)) {
-            System.out.println("Ouch, something went wrong, could not add item");
+            if (!item.reserveItem(qty)) {
+                System.out.println("Ouch, something went wrong, could not add item");
+            }
+        }
+        else {
+            System.out.println("Ouch, something went wrong, there is not such an item");
         }
     }
 
