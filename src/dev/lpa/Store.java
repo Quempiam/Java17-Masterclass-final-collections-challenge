@@ -108,6 +108,5 @@ public class Store {
 
     public void CheckoutCarts(Cart cartToCheckout) {
         System.out.printf("** Checkout for cart %d: \n", cartToCheckout.getId());
-        cartToCheckout.
     }
 }
