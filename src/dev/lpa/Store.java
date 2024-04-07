@@ -15,6 +15,8 @@ public class Store {
 
         theStore.manageStoreCarts();
         theStore.listInventory();
+
+        theStore.checkoutCarts();
     }
 
     private static final String exampleItems = """
@@ -100,13 +102,19 @@ public class Store {
         cart4.addItem(inventory.get("TUY2232"), 2);
         cart4.addItem(inventory.get("ABA1120"), 3);
         cart4.addItem(aisleInventory.get(Category.CEREAL).get("Flax seed"), 1);
+
+        System.out.println("----Store Carts----");
+        carts.forEach(System.out::println);
+        System.out.println("-------------------");
     }
 
-    public void CheckoutCarts(NavigableSet<Cart> chartsSetToCheckout) {
-        chartsSetToCheckout.forEach(this::CheckoutCarts);
+    public void checkoutCarts() {
+        carts.forEach(this::checkoutCart);
+        carts.clear();
     }
 
-    public void CheckoutCarts(Cart cartToCheckout) {
+    private void checkoutCart(Cart cartToCheckout) {
         System.out.printf("** Checkout for cart %d: \n", cartToCheckout.getId());
+        cartToCheckout.printSalesSlip(inventory);
     }
 }

@@ -39,10 +39,11 @@ public class Cart implements Comparable<Cart>{
 
     public void addItem(InventoryItem item, int qty) {
         if (item != null) {
-            products.merge(item.getProduct().sku(), qty, Integer::sum);
-
             if (!item.reserveItem(qty)) {
                 System.out.println("Ouch, something went wrong, could not add item");
+            }
+            else {
+                products.merge(item.getProduct().sku(), qty, Integer::sum);
             }
         }
         else {
@@ -72,16 +73,26 @@ public class Cart implements Comparable<Cart>{
         double total = 0;
         System.out.println("------------------------------------");
         System.out.println("Thank you for your sale: ");
+        boolean sellError = false;
         for (var cartItem : products.entrySet()) {
             var item = inventory.get(cartItem.getKey());
             int qty = cartItem.getValue();
-            double itemizedPrice = (item.getPrice() * qty);
-            total += itemizedPrice;
-            System.out.printf("\t%s %-10s (%d)@ $%.2f = $%.2f%n",
-                    cartItem.getKey(), item.getProduct().name(), qty,
-                    item.getPrice(), itemizedPrice);
+            if (item.sellItem(qty)) {
+                double itemizedPrice = (item.getPrice() * qty);
+                total += itemizedPrice;
+                System.out.printf("\t%s %-10s (%d)@ $%.2f = $%.2f%n",
+                        cartItem.getKey(), item.getProduct().name(), qty,
+                        item.getPrice(), itemizedPrice);
+            }
+            else {
+                sellError = true;
+                System.out.printf("\t%s %-10s cannot sell item%n",
+                        cartItem.getKey(), item.getProduct().name());
+            }
         }
         System.out.printf("Total Sale: $%.2f%n", total);
+        if (sellError) System.out.println("Error occurred while selling some items.\n" +
+                "They won't be added to total prize");
         System.out.println("------------------------------------");
     }
 
